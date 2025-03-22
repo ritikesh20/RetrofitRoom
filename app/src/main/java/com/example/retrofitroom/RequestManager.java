@@ -1,7 +1,7 @@
 package com.example.retrofitroom;
 
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,14 +40,14 @@ public class RequestManager {
             call.enqueue(new Callback<NewsApiResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<NewsApiResponse> call, @NonNull Response<NewsApiResponse> response) {
-                    if (!response.isSuccessful()) {
-                        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                    if (!response.isSuccessful() || response.body() == null) {
+                        Log.e("API Error", "Error code: " + response.code() + " - " + response.message());
+                        Toast.makeText(context, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                         listener.onError("Error: " + response.code());
-                        return;
+                    } else {
+                        listener.onFetchData(response.body().getArticles(), response.message());
                     }
 
-                    assert response.body() != null;
-                    listener.onFetchData(response.body().getArticles(), response.message());
 
                 }
 

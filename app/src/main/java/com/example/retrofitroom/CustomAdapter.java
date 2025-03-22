@@ -2,7 +2,6 @@ package com.example.retrofitroom;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -35,23 +34,40 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
-        holder.text_title.setText(headlineList.get(position).getTitle());
-        if (headlineList.get(position).getUrlToImage() != null) {
-            Picasso.get().load(headlineList.get(position).getUrlToImage()).into(holder.img_headline);
-        }
-        holder.text_author.setText(headlineList.get(position).getSource().getName());
+        NewsHeadline currentHeadline = headlineList.get(position);
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.OnNewsClicked(headlineList.get(position));
-            }
-        });
+        holder.text_title.setText(currentHeadline.getTitle());
+
+        String imageUrl = currentHeadline.getUrlToImage();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.not_available)
+                    .error(R.drawable.not_available)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.img_headline);
+        } else {
+            Picasso.get()
+                    .load(R.drawable.not_available)  // Placeholder for missing images
+                    .into(holder.img_headline);
+        }
+
+        // Set the author name
+        //holder.text_author.setText(currentHeadline.getSource().getName());
+        if (currentHeadline.getSource() != null && currentHeadline.getSource().getName() != null) {
+            holder.text_author.setText(currentHeadline.getSource().getName());
+        } else {
+            holder.text_author.setText("Unknown Source");
+        }
+
+        // Set click listener on CardView
+        holder.cardView.setOnClickListener(v -> listener.OnNewsClicked(currentHeadline));
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return headlineList.size();
     }
 }

@@ -35,9 +35,12 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
+
         searchView = findViewById(R.id.search_view);
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -54,9 +57,10 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
                 return false;
             }
         });
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Fetching News...");
-        progressDialog.show();
+        progressDialog.setCancelable(false);
 
         btn1 = findViewById(R.id.btn_1);
         btn1.setOnClickListener(this);
